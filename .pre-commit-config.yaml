@@ -1,0 +1,123 @@
+# Pre-commit hooks configuration
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Python code formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.10
+        args: [--line-length=100]
+
+  # Python linting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
+  # Type checking with mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - sqlalchemy[mypy]
+        args: [--ignore-missing-imports]
+
+  # General file formatting
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+        exclude: ^.*\.(md|rst)$
+
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+
+      # Check for large files
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+
+      # Check YAML syntax
+      - id: check-yaml
+        args: [--safe]
+
+      # Check TOML syntax
+      - id: check-toml
+
+      # Check JSON syntax
+      - id: check-json
+
+      # Prevent committing to protected branches
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, master]
+
+      # Check for merge conflicts
+      - id: check-merge-conflict
+
+      # Check for debugger imports
+      - id: debug-statements
+
+      # Check Python syntax
+      - id: check-ast
+
+      # Check for case conflicts
+      - id: check-case-conflict
+
+      # Check docstring is first
+      - id: check-docstring-first
+
+      # Fix mixed line endings
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Security checks with bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-c, pyproject.toml]
+        additional_dependencies: ["bandit[toml]"]
+        exclude: ^tests/
+
+  # Check for secrets
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: package.lock.json
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        entry: hadolint
+        language: system
+        types: [dockerfile]
+
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        args: [-c=.yamllint.yaml]
+
+# CI-specific configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
