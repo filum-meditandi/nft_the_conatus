@@ -181,16 +181,7 @@ class SMSPainReport(BaseModel):
 # DEPENDENCY
 # ============================================================================
 
-# In production, this would come from your database session dependency
-def get_db():
-    """Database session dependency - implement based on your setup."""
-    # from database import SessionLocal
-    # db = SessionLocal()
-    # try:
-    #     yield db
-    # finally:
-    #     db.close()
-    raise NotImplementedError("Implement get_db() with your database session")
+from database import get_db
 
 
 # ============================================================================
@@ -198,7 +189,7 @@ def get_db():
 # ============================================================================
 
 @router.post(
-    "/pain-states",
+    "/pain",
     response_model=PainStateResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Record a pain state with attestation"
@@ -281,7 +272,7 @@ async def create_pain_state(
 
 
 @router.post(
-    "/perspective-notes",
+    "/perspective",
     response_model=PerspectiveNoteResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Record a perspective note with attestation"
