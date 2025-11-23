@@ -8,11 +8,14 @@ A legal tech platform that enables injured plaintiffs to submit accessible, priv
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 
+> **Project Status:** Early-stage development. Core architecture implemented; security hardening, compliance validation, and production deployment in progress. Not yet cleared for production use with real PHI.
+
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Who This Is For](#who-this-is-for)
 - [Core Principles](#core-principles)
 - [Features](#features)
 - [Architecture](#architecture)
@@ -43,6 +46,12 @@ When someone is in pain at 3am with brain fog, they can't navigate multi-step in
 - A **statistical data point** for pain trajectory inference (HMM-based)
 - A **legally defensible** piece of evidence (explainable methodology)
 
+### Who This Is For
+
+- **Plaintiff law firms** who need authentic, time-stamped pain logs instead of backfilled journals submitted months after injury.
+- **Nurse life care planners and damages experts** who want a defensible trajectory of suffering and functional limitation over time.
+- **Legal tech developers** building intake or case management tools who need a drop-in, HIPAA-aware evidence engine with cryptographic verification.
+
 ---
 
 ## Core Principles
@@ -66,7 +75,7 @@ Every conclusion must trace back to specific attestations.
 ## Features
 
 ### 🔐 **Cryptographic Integrity**
-- **Hash Chains**: Each entry cryptographically linked to the previous (Merkle-style)
+- **Hash Chains**: Each entry cryptographically linked to the previous (blockchain-style linked hash chain)
 - **Digital Signatures**: Ed25519/ECDSA signing for non-repudiation
 - **Tamper Detection**: Any modification invalidates the entire chain
 
@@ -85,10 +94,11 @@ Every conclusion must trace back to specific attestations.
 - **Trajectory Analysis**: BASELINE → FLARE → IMPROVEMENT → SEVERE
 - **Anomaly Detection**: Flag inconsistent patterns for review
 
-### 📄 **NFT-Based Proof**
-- **Cryptographic Commitment**: Portable proof bundle with chain verification
-- **Legally Defensible**: Includes methodology, assumptions, limitations
-- **Court-Ready**: Designed for Daubert admissibility standards
+### 📄 **Cryptographic Proof Bundle**
+- **Portable commitment**: Self-contained proof package with complete chain verification
+- **Optional NFT-style tokenization**: Each persona chain can be bound to a unique token ID for external systems (blockchains, registries, etc.)
+- **Legally Defensible**: Includes methodology, assumptions, and limitations
+- **Court-Ready**: Designed with Daubert admissibility standards in mind
 
 ### ⚖️ **Legal Structure**
 - **Evidence Graph**: Facts linked to evidence with semantic roles
@@ -226,6 +236,44 @@ make generate-keys
 # MASTER_ENCRYPTION_KEY=<generated_fernet_key>
 # SECRET_KEY=<generated_secret_key>
 ```
+
+### First Request: Log a Pain Event
+
+Once the server is running, test it with your first pain report:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/phenomenology/pain \
+  -H "Content-Type: application/json" \
+  -d '{
+    "party_id": "550e8400-e29b-41d4-a716-446655440000",
+    "value": 7.0,
+    "location": "neck",
+    "quality": "burning",
+    "functional_impact": {
+      "sleep_disruption": true
+    }
+  }'
+```
+
+**Example response:**
+```json
+{
+  "id": "b3f0c1f0-a4d2-4e8f-9c7b-1a2b3c4d5e6f",
+  "attestation_id": "d7e8f9a0-b1c2-3d4e-5f6a-7b8c9d0e1f2a",
+  "entry_hash": "5c8f2a1b...e2d3c4b5",
+  "payload_hash": "9d1a2b3c...4e5f6a7b",
+  "chain_index": 0,
+  "created_at": "2025-11-23T03:41:22Z"
+}
+```
+
+**What just happened:**
+- Created an **encrypted PHI record** of the subjective pain note
+- Generated a **tamper-evident chain link** with cryptographic hash
+- Recorded a **normalized PainState** for HMM statistical analysis
+- Returned proof of attestation with verifiable timestamp
+
+See [examples/curl_examples.md](examples/curl_examples.md) for more API examples.
 
 ---
 
@@ -395,14 +443,14 @@ nft_the_conatus/
 
 ## Roadmap
 
-### Phase 1: Core Platform ✅
-- [x] Database schema and models
-- [x] Attestation chain implementation
-- [x] PHI separation and encryption
-- [x] SMS integration (Twilio)
-- [x] HMM inference engine
-- [x] FastAPI endpoints
-- [x] Docker deployment
+### Phase 1: Core Platform - Architecture Complete (Integration in Progress)
+- [x] Database schema and models (code complete, not yet tested end-to-end)
+- [x] Attestation chain implementation (core logic complete, integration pending)
+- [x] PHI separation and encryption (implemented, needs production hardening)
+- [x] SMS integration (Twilio handlers written, webhook testing needed)
+- [x] HMM inference engine (statistical models implemented, validation pending)
+- [x] FastAPI endpoints (routes defined, database integration in progress)
+- [x] Docker deployment (containers configured, orchestration ready)
 
 ### Phase 2: Production Readiness (Current)
 - [ ] Comprehensive test suite
