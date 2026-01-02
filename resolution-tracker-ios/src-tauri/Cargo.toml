@@ -1,0 +1,34 @@
+[package]
+name = "resolution-tracker"
+version = "1.0.0"
+description = "New Year's Resolution Tracker with NFT-like attestation"
+authors = ["Resolution Tracker Team"]
+license = "MIT"
+repository = ""
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+sha2 = "0.10"
+hex = "0.4"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+rusqlite = { version = "0.30", features = ["bundled"] }
+tokio = { version = "1", features = ["full"] }
+
+[target.'cfg(target_os = "ios")'.dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+
+[lib]
+name = "resolution_tracker_lib"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[[bin]]
+name = "resolution-tracker"
+path = "src/main.rs"
